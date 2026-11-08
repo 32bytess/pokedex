@@ -39,6 +39,11 @@ func getCommands() map[string]cliCommand {
 				return commandMap(cfg, false)
 			},
 		},
+		"explore": {
+			name:        "explore",
+			description: "Displays the names of Pokemons in the area",
+			callback:    commandExplore,
+		},
 	}
 }
 
@@ -56,11 +61,11 @@ func startRepl(cfg *config) {
 				return
 			}
 			text := scanner.Text()
-			words := cleanInput(text)
-			if len(words) == 0 {
+			cfg.commands = cleanInput(text)
+			if len(cfg.commands) == 0 {
 				continue
 			}
-			if c, ok := getCommands()[words[0]]; ok {
+			if c, ok := getCommands()[cfg.commands[0]]; ok {
 				c.callback(cfg)
 			} else {
 				fmt.Println("Unknown command")

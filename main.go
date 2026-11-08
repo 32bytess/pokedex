@@ -8,6 +8,7 @@ type config struct {
 	pokiClient           pokeapi.Client
 	nextLocationArea     *string
 	previousLocationArea *string
+	commands             []string
 }
 
 func main() {
@@ -16,6 +17,7 @@ func main() {
 		pokiClient:           pokeapi.NewClient(),
 		nextLocationArea:     nil,
 		previousLocationArea: nil,
+		commands:             []string{},
 	}
 	startRepl(&cfg)
 }
