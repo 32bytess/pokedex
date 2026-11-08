@@ -1,5 +1,7 @@
 package pokeapi
 
+import "fmt"
+
 type PokemonResp struct {
 	ID             int    `json:"id"`
 	Name           string `json:"name"`
@@ -21,4 +23,18 @@ type PokemonResp struct {
 			URL  string `json:"url"`
 		} `json:"type"`
 	} `json:"types"`
+}
+
+func (p *PokemonResp) Inspect() {
+	fmt.Printf("Name: %s\n", p.Name)
+	fmt.Printf("Height: %d\n", p.Height)
+	fmt.Printf("Weight: %d\n", p.Weight)
+	fmt.Println("Stats:")
+	for _, stat := range p.Stats {
+		fmt.Printf("\t-%s: %d\n", stat.Stat.Name, stat.BaseStat)
+	}
+	fmt.Println("Types:")
+	for _, t := range p.Types {
+		fmt.Printf("\t- %s\n", t.Type.Name)
+	}
 }
