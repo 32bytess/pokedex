@@ -2,52 +2,68 @@ package pokecache
 
 import (
 	"testing"
+	"time"
 )
 
-func TestAddGet(t *testing.T) {
+func TestCreateCache(t *testing.T) {
+	cache := NewCache(time.Millisecond)
 
+	if cache.data == nil {
+		t.Error("cache is nil")
+	}
+}
+
+func TestAddGet(t *testing.T) {
 	cases := []struct {
 		key string
 		val []byte
 	}{
 		{
-			key: "https://example.com",
-			val: []byte("testdata"),
+			key: "key1",
+			val: []byte("val1"),
+		},
+
+		{
+			key: "key2",
+			val: []byte("val2"),
 		},
 		{
-			key: "https://example.com/path",
-			val: []byte("moretestdata"),
+			key: "key3",
+			val: []byte("val3"),
 		},
 	}
-
-	cache := NewCache()
-	for i := range cases {
-		cache.Add(cases[i].key, cases[i].val)
-		if len(cache.data) != i+1 {
-			t.Errorf("case %d: expected to add key %s, val: %s", i, cases[i].key, cases[i].val)
-			continue
-		}
-
-		got, ok := cache.Get(cases[i].key)
+	cache := NewCache(time.Millisecond)
+	for _, cas := range cases {
+		cache.Add(cas.key, cas.val)
+		actual, ok := cache.Get(cas.key)
 		if !ok {
-			t.Errorf("case %d: expected to find key %q", i, cases[i].key)
+			t.Errorf("%s key not found", cas.key)
 			continue
 		}
-		if string(got) != string(cases[i].val) {
-			t.Errorf("case %d: expected %q, got %q", i, cases[i].val, got)
+		if string(actual) != string(cas.val) {
+			t.Errorf("%s does'nt match %s", actual, cas.val)
 		}
 	}
-
 }
 
-func TestGetMissing(t *testing.T) {
-	cache := NewCache()
-
-	got, ok := cache.Get("not-there")
-	if ok {
-		t.Errorf("expected ok to be false for a missing key, got true")
+func TestReapedLoop(t *testing.T) {
+	interval := time.Millisecond * 10
+	cache := NewCache(interval)
+	key := "key1"
+	cache.Add(key, []byte("val1"))
+	time.Sleep(interval + time.Millisecond)
+	if _, ok := cache.Get(key); ok {
+		t.Errorf("%s key should be reaped", key)
 	}
-	if got != nil {
-		t.Errorf("expected nil for a missing key, got %q", got)
+}
+
+func TestFailReapedLoop(t *testing.T) {
+	interval := time.Millisecond * 10
+	cache := NewCache(interval)
+	key := "key1"
+	cache.Add(key, []byte("val1"))
+	time.Sleep(time.Millisecond)
+	if _, ok := cache.Get(key); !ok {
+		t.Errorf("%s key should have not beet reaped", key)
 	}
 }
