@@ -1,6 +1,8 @@
 package main
 
-import "github.com/32bytess/pokedex/internals/pokeapi"
+import (
+	"github.com/32bytess/pokedex/internals/pokeapi"
+)
 
 type config struct {
 	pokiClient           pokeapi.Client

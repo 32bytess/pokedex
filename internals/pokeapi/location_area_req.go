@@ -3,6 +3,8 @@ package pokeapi
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"log"
 	"net/http"
 )
 
@@ -13,6 +15,11 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationsAreaResp, error) {
 		fullURL = *pageURL
 	}
 
+	val, ok := c.cache.Get(fullURL)
+	if ok {
+		log.Print("from cache")
+		return unmarshal(val)
+	}
 	req, err := http.NewRequest("GET", fullURL, nil)
 	if err != nil {
 		return LocationsAreaResp{}, err
@@ -29,9 +36,19 @@ func (c *Client) ListLocationAreas(pageURL *string) (LocationsAreaResp, error) {
 		return LocationsAreaResp{}, fmt.Errorf("bad status code : %v", res.StatusCode)
 	}
 
-	var locations LocationsAreaResp
+	data, err := io.ReadAll(res.Body)
+	if err != nil {
+		return LocationsAreaResp{}, err
+	}
+	c.cache.Add(fullURL, data)
+	log.Print("from http")
+	return unmarshal(data)
+}
 
-	if err := (json.NewDecoder(res.Body)).Decode(&locations); err != nil {
+func unmarshal(data []byte) (LocationsAreaResp, error) {
+
+	var locations LocationsAreaResp
+	if err := json.Unmarshal(data, &locations); err != nil {
 		return LocationsAreaResp{}, err
 	}
 	return locations, nil
