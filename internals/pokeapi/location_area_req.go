@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 )
 
@@ -33,7 +32,6 @@ func (c *Client) getRequest[T any](fullURL string) (*T, error) {
 
 	val, ok := c.cache.Get(fullURL)
 	if ok {
-		log.Print("from cache")
 		return unmarshal[T](val)
 	}
 	req, err := http.NewRequest("GET", fullURL, nil)
@@ -57,7 +55,6 @@ func (c *Client) getRequest[T any](fullURL string) (*T, error) {
 		return nil, err
 	}
 	c.cache.Add(fullURL, data)
-	log.Print("from http")
 	return unmarshal[T](data)
 }
 
