@@ -1,6 +1,6 @@
 package pokeapi
 
-type PokemonsResp struct {
+type LocationAreasPokemonsResp struct {
 	ID                int    `json:"id"`
 	Name              string `json:"name"`
 	PokemonEncounters []struct {

@@ -17,10 +17,16 @@ func (c *Client) ListLocationAreas(pageURL *string) (*LocationsAreaResp, error) 
 	return c.getRequest[LocationsAreaResp](fullURL)
 }
 
-func (c *Client) GetPokemonsInArea(name string) (*PokemonsResp, error) {
+func (c *Client) GetPokemonsInArea(name string) (*LocationAreasPokemonsResp, error) {
 	endpoint := "/location-area" + "/" + name
 	fullURL := baseURL + endpoint
-	return c.getRequest[PokemonsResp](fullURL)
+	return c.getRequest[LocationAreasPokemonsResp](fullURL)
+}
+
+func (c *Client) GetPokemonDetails(name string) (*PokemonResp, error) {
+	endpoint := "/pokemon" + "/" + name
+	fullURL := baseURL + endpoint
+	return c.getRequest[PokemonResp](fullURL)
 }
 
 func (c *Client) getRequest[T any](fullURL string) (*T, error) {
