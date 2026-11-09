@@ -76,11 +76,11 @@ func startRepl(cfg *config) {
 				return
 			}
 			text := scanner.Text()
-			cfg.commands = cleanInput(text)
-			if len(cfg.commands) == 0 {
+			cfg.currentCommand = cleanInput(text)
+			if len(cfg.currentCommand) == 0 {
 				continue
 			}
-			if c, ok := getCommands()[cfg.commands[0]]; ok {
+			if c, ok := getCommands()[cfg.currentCommand[0]]; ok {
 				c.callback(cfg)
 			} else {
 				fmt.Println("Unknown command")

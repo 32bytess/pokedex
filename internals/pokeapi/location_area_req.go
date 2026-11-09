@@ -7,25 +7,25 @@ import (
 	"net/http"
 )
 
-func (c *Client) ListLocationAreas(pageURL *string) (*LocationsAreaResp, error) {
+func (c *Client) ListLocationAreas(pageURL *string) (*ListLocationAreas, error) {
 	endpoint := "/location-area"
 	fullURL := baseURL + endpoint
 	if pageURL != nil {
 		fullURL = *pageURL
 	}
-	return c.getRequest[LocationsAreaResp](fullURL)
+	return c.getRequest[ListLocationAreas](fullURL)
 }
 
-func (c *Client) GetPokemonsInArea(name string) (*LocationAreasPokemonsResp, error) {
-	endpoint := "/location-area" + "/" + name
+func (c *Client) GetLocationArea(locationName string) (*LocationArea, error) {
+	endpoint := "/location-area" + "/" + locationName
 	fullURL := baseURL + endpoint
-	return c.getRequest[LocationAreasPokemonsResp](fullURL)
+	return c.getRequest[LocationArea](fullURL)
 }
 
-func (c *Client) GetPokemonDetails(name string) (*PokemonResp, error) {
-	endpoint := "/pokemon" + "/" + name
+func (c *Client) GetPokemon(pokemonName string) (*Pokemon, error) {
+	endpoint := "/pokemon" + "/" + pokemonName
 	fullURL := baseURL + endpoint
-	return c.getRequest[PokemonResp](fullURL)
+	return c.getRequest[Pokemon](fullURL)
 }
 
 func (c *Client) getRequest[T any](fullURL string) (*T, error) {

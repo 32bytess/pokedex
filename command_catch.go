@@ -7,24 +7,24 @@ import (
 )
 
 func commandCatch(cfg *config) error {
-	if len(cfg.commands) != 2 {
+	if len(cfg.currentCommand) != 2 {
 		fmt.Println("catch command need pokemon name as an input")
 		return errors.New("catch command need name as an input")
 	}
 
-	name := cfg.commands[1]
-	fmt.Printf("Throwing a Pokeball at %s...\n", name)
-	pokemon, err := cfg.pokiClient.GetPokemonDetails(name)
+	pokemonName := cfg.currentCommand[1]
+	fmt.Printf("Throwing a Pokeball at %s...\n", pokemonName)
+	pokemon, err := cfg.pokiClient.GetPokemon(pokemonName)
 	if err != nil {
 		return err
 	}
 	r := rand.Intn(200)
 	if r >= pokemon.BaseExperience {
-		fmt.Printf("%s was caught!\n", name)
+		fmt.Printf("%s was caught!\n", pokemonName)
 		fmt.Printf("yuu may now inspect it with the inspect command\n")
-		cfg.catched[name] = *pokemon
+		cfg.catchedPokemons[pokemonName] = *pokemon
 		return nil
 	}
-	fmt.Printf("%s escaped!\n", name)
+	fmt.Printf("%s escaped!\n", pokemonName)
 	return nil
 }
